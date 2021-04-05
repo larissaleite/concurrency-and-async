@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+asyncio = "*"
+httpx = "*"
+
+[dev-packages]
+isort = "*"
+black = "==19.3b0"
+flake8 = "*"
+mypy = "*"
+
+[requires]
+python_version = "3.9"
