@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 asyncio = "*"
 httpx = "*"
+requests = "*"
+bs4 = "*"
 
 [dev-packages]
 isort = "*"
