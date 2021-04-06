@@ -1,6 +1,6 @@
 import functools
-from time import time
 from pathlib import Path
+from time import time
 
 
 def duration(func):
