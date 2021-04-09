@@ -1,12 +1,13 @@
+import concurrent.futures
 from collections import defaultdict
-from typing import Dict, List, Optional
 from math import floor
 from multiprocessing import cpu_count
-import concurrent.futures
+from typing import Dict, List, Optional
+
 import requests
 from bs4 import BeautifulSoup
 
-from utils import duration, write_to_file
+from utils import duration, timer, write_to_file
 
 QUOTES_API_URL = "https://breaking-bad-quotes.herokuapp.com/v1/quotes"
 
@@ -28,6 +29,13 @@ def get_breaking_bad_characters() -> List[str]:
     if response.status_code == 200:
         return [character["name"] for character in response.json()]
     return []
+
+
+def get_breaking_bad_random_character() -> Optional[str]:
+    response = requests.get(f"{BREAKING_BAD_API_URL}/character/random")
+    if response.status_code == 200:
+        return response.json()
+    return None
 
 
 def get_breaking_bad_wikipedia_character_info(character: str) -> str:
@@ -55,7 +63,7 @@ def get_breaking_bad_characters_summary_and_write_to_file(
 
 
 @duration
-def get_breaking_bad_characters_summary_and_write_to_file_sync() -> None:
+def get_breaking_bad_characters_summary_and_write_to_file_sequential() -> None:
     # Takes ~23 seconds
     get_breaking_bad_characters_summary_and_write_to_file()
 
@@ -65,11 +73,10 @@ def get_breaking_bad_characters_summary_and_write_to_file_multiprocessing() -> N
     # Takes ~12 seconds
     characters = get_breaking_bad_characters()
 
-    NUM_PAGES = len(characters)
+    TOTAL_CHARACTERS = len(characters)
     NUM_CORES = cpu_count()
 
-    PAGES_PER_CORE = floor(NUM_PAGES / NUM_CORES)
-    PAGES_FOR_FINAL_CORE = PAGES_PER_CORE + NUM_PAGES % PAGES_PER_CORE
+    CHARS_PER_CORE = floor(TOTAL_CHARACTERS / NUM_CORES)
 
     futures = []
 
@@ -79,7 +86,7 @@ def get_breaking_bad_characters_summary_and_write_to_file_multiprocessing() -> N
                 executor.submit(
                     get_breaking_bad_characters_summary_and_write_to_file,
                     characters=characters[
-                        i * PAGES_PER_CORE : (i + 1) * PAGES_PER_CORE
+                        i * CHARS_PER_CORE : (i + 1) * CHARS_PER_CORE
                     ],
                 )
             )
@@ -87,13 +94,44 @@ def get_breaking_bad_characters_summary_and_write_to_file_multiprocessing() -> N
         futures.append(
             executor.submit(
                 get_breaking_bad_characters_summary_and_write_to_file,
-                characters[(i + 1) * PAGES_PER_CORE :],
+                characters[(i + 1) * CHARS_PER_CORE :],
             )
         )
 
     concurrent.futures.wait(futures)
 
 
+def get_breaking_bad_random_characters_N_times(n: int) -> None:
+    # Takes ~205 seconds
+    for i in range(n):
+        get_breaking_bad_random_character()
+
+
+@duration
+def get_breaking_bad_random_characters_N_times_multiprocessing(n: int) -> None:
+    # Takes ~51 seconds
+    NUM_CORES = cpu_count()
+
+    CALLS_PER_CORE = floor(n / NUM_CORES)
+    CALLS_FOR_FINAL_CORE = CALLS_PER_CORE + n % CALLS_PER_CORE
+
+    futures = []
+
+    with concurrent.futures.ProcessPoolExecutor(NUM_CORES) as executor:
+        for i in range(NUM_CORES):
+            calls = CALLS_PER_CORE if i < NUM_CORES else CALLS_FOR_FINAL_CORE
+
+            futures.append(
+                executor.submit(get_breaking_bad_random_characters_N_times, calls)
+            )
+
+    concurrent.futures.wait(futures)
+
+
 if __name__ == "__main__":
-    get_breaking_bad_characters_summary_and_write_to_file_sync()
+    get_breaking_bad_characters_summary_and_write_to_file_sequential()
     get_breaking_bad_characters_summary_and_write_to_file_multiprocessing()
+
+    with timer("get_breaking_bad_random_characters_N_times_sequential"):
+        get_breaking_bad_random_characters_N_times(250)
+    get_breaking_bad_random_characters_N_times_multiprocessing(250)

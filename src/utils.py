@@ -1,16 +1,30 @@
 import functools
+from contextlib import contextmanager
 from pathlib import Path
 from time import time
+
 import aiofiles
+
+
+@contextmanager
+def timer(func_name):
+    start = time()
+    try:
+        yield
+    finally:
+        end = time()
+        print(f"Total duration of {func_name}: {end - start} seconds.")
 
 
 def duration(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start = time()
-        result = func(*args, **kwargs)
-        end = time()
-        print(f"Total duration of {func.__name__}: {end - start} seconds.")
+        try:
+            result = func(*args, **kwargs)
+        finally:
+            end = time()
+            print(f"Total duration of {func.__name__}: {end - start} seconds.")
         return result
 
     return wrapper
