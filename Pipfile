@@ -8,6 +8,7 @@ asyncio = "*"
 httpx = "*"
 requests = "*"
 bs4 = "*"
+aiofiles = "*"
 
 [dev-packages]
 isort = "*"
