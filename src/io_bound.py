@@ -80,7 +80,7 @@ def get_breaking_bad_characters_summary_and_write_to_file_multiprocessing() -> N
 
     futures = []
 
-    with concurrent.futures.ProcessPoolExecutor(NUM_CORES) as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         for i in range(NUM_CORES - 1):
             futures.append(
                 executor.submit(
@@ -117,7 +117,28 @@ def get_breaking_bad_random_characters_N_times_multiprocessing(n: int) -> None:
 
     futures = []
 
-    with concurrent.futures.ProcessPoolExecutor(NUM_CORES) as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for i in range(NUM_CORES):
+            calls = CALLS_PER_CORE if i < NUM_CORES else CALLS_FOR_FINAL_CORE
+
+            futures.append(
+                executor.submit(get_breaking_bad_random_characters_N_times, calls)
+            )
+
+    concurrent.futures.wait(futures)
+
+
+@duration
+def get_breaking_bad_random_characters_N_times_multithreads(n: int) -> None:
+    # Takes ~50 seconds
+    NUM_CORES = cpu_count()
+
+    CALLS_PER_CORE = floor(n / NUM_CORES)
+    CALLS_FOR_FINAL_CORE = CALLS_PER_CORE + n % CALLS_PER_CORE
+
+    futures = []
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
         for i in range(NUM_CORES):
             calls = CALLS_PER_CORE if i < NUM_CORES else CALLS_FOR_FINAL_CORE
 
@@ -135,3 +156,4 @@ if __name__ == "__main__":
     with timer("get_breaking_bad_random_characters_N_times_sequential"):
         get_breaking_bad_random_characters_N_times(250)
     get_breaking_bad_random_characters_N_times_multiprocessing(250)
+    get_breaking_bad_random_characters_N_times_multithreads(250)
