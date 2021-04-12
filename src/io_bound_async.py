@@ -142,27 +142,12 @@ def get_breaking_bad_random_characters_N_times_multiprocessing(n: int) -> None:
     concurrent.futures.wait(futures)
 
 
-@duration
-def get_breaking_bad_random_characters_N_times_multithread(n: int) -> None:
-    # Takes ~16 seconds
-    NUM_CORES = cpu_count()
-
-    CALLS_PER_CORE = floor(n / NUM_CORES)
-    CALLS_FOR_FINAL_CORE = CALLS_PER_CORE + n % CALLS_PER_CORE
-
-    futures = []
-
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        for i in range(NUM_CORES):
-            calls = CALLS_PER_CORE if i < NUM_CORES else CALLS_FOR_FINAL_CORE
-
-            futures.append(
-                executor.submit(
-                    get_breaking_bad_random_characters_N_times_wrapper, calls
-                )
-            )
-
-    concurrent.futures.wait(futures)
+async def get_breaking_bad_random_characters_N_times_multithread(n: int) -> None:
+    # Takes 5 seconds
+    async with AsyncClient() as client:
+        return await asyncio.gather(
+            *[get_breaking_bad_random_character(client) for i in range(n)]
+        )
 
 
 if __name__ == "__main__":
@@ -171,5 +156,9 @@ if __name__ == "__main__":
 
     with timer("get_breaking_bad_random_characters_N_times_sequential"):
         asyncio.run(get_breaking_bad_random_characters_N_times(250))
+
     get_breaking_bad_random_characters_N_times_multiprocessing(250)
-    get_breaking_bad_random_characters_N_times_multithread(250)
+
+    with timer("get_breaking_bad_random_characters_N_times_multithread"):
+        asyncio.run(get_breaking_bad_random_characters_N_times_multithread(250))
+
