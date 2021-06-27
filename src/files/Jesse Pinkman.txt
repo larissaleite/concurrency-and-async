@@ -4,21 +4,38 @@ Summary:
 
 
 
-			Main
-			
-		
-			2008
-			
-		
-			2009
-			
-		
-			2010
-			
-		
-			El Camino
-			
-		
+
+
+
+							Main
+							
+						
+
+
+
+							2008
+							
+						
+
+
+
+							2009
+							
+						
+
+
+
+							2010
+							
+						
+
+
+
+							El Camino
+							
+						
+
+
 
 
 
@@ -65,7 +82,7 @@ Aaron Paul
 Character information
 
 Full name
-Jesse Bruce Pinkman
+Jesse Bruce Pinkman ("Down")
 
 
 Aliases
@@ -77,7 +94,7 @@ Alive
 
 
 Age
-25 ("Felina")
+26 ("Felina")
 
 
 Date of birth

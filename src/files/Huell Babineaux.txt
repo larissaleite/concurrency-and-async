@@ -4,18 +4,45 @@ Summary:
 
 
 
-			Main
-			
-		
-			2003
-			
-		
-			2004
-			
-		
-			2009
-			
-		
+
+
+
+							Main
+							
+						
+
+
+
+							2003
+							
+						
+
+
+
+							2004
+							
+						
+
+
+
+							2009
+							
+						
+
+
+
+							2010
+							
+						
+
+
+
+
+
+
+
+
+
 
 
 
@@ -121,7 +148,7 @@ Appearance in El Camino
 
 
 
-Images (30) / Videos (2)
+Images (31) / Videos (2)
 
 
 Huell Babineaux is Saul Goodman's former personal bodyguard. He provides a variety of services to Saul, including personal protection, intimidation and pick-pocketing.

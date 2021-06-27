@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 
 import requests
 from bs4 import BeautifulSoup
+from requests.sessions import Session
 
 from utils import duration, timer, write_to_file
 
@@ -31,17 +32,17 @@ def get_breaking_bad_characters() -> List[str]:
     return []
 
 
-def get_breaking_bad_random_character() -> Optional[str]:
-    response = requests.get(f"{BREAKING_BAD_API_URL}/character/random")
+def get_breaking_bad_random_character(session: Session) -> Optional[str]:
+    response = session.get(f"{BREAKING_BAD_API_URL}/character/random")
     if response.status_code == 200:
         return response.json()
     return None
 
 
-def get_breaking_bad_wikipedia_character_info(character: str) -> str:
+def get_breaking_bad_wikipedia_character_info(character: str, session: Session) -> str:
     url = f"{BREAKING_BAD_WIKIPEDIA_URL}/{character}"
 
-    response = requests.get(url)
+    response = session.get(url)
 
     soup = BeautifulSoup(response.text, features="html.parser")
 
@@ -55,8 +56,10 @@ def get_breaking_bad_characters_summary_and_write_to_file(
     if not characters:
         characters = get_breaking_bad_characters()
 
+    session = requests.Session()
+
     for character in characters:
-        wiki_summary = get_breaking_bad_wikipedia_character_info(character)
+        wiki_summary = get_breaking_bad_wikipedia_character_info(character, session)
         write_to_file(
             file_name=character, file_content=f"{character}\nSummary:\n{wiki_summary}"
         )
@@ -102,14 +105,15 @@ def get_breaking_bad_characters_summary_and_write_to_file_multiprocessing() -> N
 
 
 def get_breaking_bad_random_characters_N_times(n: int) -> None:
-    # Takes ~205 seconds
+    # Takes ~66 seconds
+    session = requests.Session()
     for i in range(n):
-        get_breaking_bad_random_character()
+        get_breaking_bad_random_character(session)
 
 
 @duration
 def get_breaking_bad_random_characters_N_times_multiprocessing(n: int) -> None:
-    # Takes ~51 seconds
+    # Takes ~17 seconds
     NUM_CORES = cpu_count()
 
     CALLS_PER_CORE = floor(n / NUM_CORES)
@@ -130,12 +134,13 @@ def get_breaking_bad_random_characters_N_times_multiprocessing(n: int) -> None:
 
 @duration
 def get_breaking_bad_random_characters_N_times_multithreads(n: int) -> None:
-    # Takes ~6 seconds
+    # Takes ~5 seconds
     futures = []
+    session = requests.Session()
 
     with concurrent.futures.ThreadPoolExecutor(n) as executor:
         for i in range(n):
-            futures.append(executor.submit(get_breaking_bad_random_character))
+            futures.append(executor.submit(get_breaking_bad_random_character, session))
 
     concurrent.futures.wait(futures)
 

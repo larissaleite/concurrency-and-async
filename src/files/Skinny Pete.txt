@@ -4,12 +4,20 @@ Summary:
 
 
 
-			Main
-			
-		
-			El Camino
-			
-		
+
+
+
+							Main
+							
+						
+
+
+
+							El Camino
+							
+						
+
+
 
 
 
@@ -39,7 +47,7 @@ Peter
 
 
 Aliases
-PeteSkin
+PeteSkinSkinny
 
 
 Status
@@ -122,4 +130,4 @@ Skinny Pete served time in the Los Lunas state prison with Tuco Salamanca and la
 
 After Hank Schrader kills Tuco in a shootout, Walter White and Jesse begin distributing meth on their own. Jesse, in charge of the street operation, enlists Skinny Pete and two other friends, Combo and Badger, as dealers. A couple of junkies steal meth from Skinny, but his reputation stays intact thanks to a rumor that Jesse retaliated by crushing one junkie's head with an ATM. ("Breakage",  "Peekaboo")
 
-The operation goes well, until Badger gets busted and Combo is murdered for invading a rival gang's turf. Afraid of being murdered or sent back to prison, Skinny quits dealing and informs Jesse that he's lost his street cred because everyone found out that Jesse didn't kill the junkie after all. ("Better Call Saul",  "Mandala")
+The operation goes well, until Badger gets busted and Combo is murdered for invading a rival gang's turf. Afraid of being murdered or sent back to prison as he is under probation, Skinny quits dealing and informs Jesse that he's lost his street cred because everyone found out that Jesse didn't kill the junkie after all. ("Better Call Saul",  "Mandala")
